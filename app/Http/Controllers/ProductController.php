@@ -10,10 +10,24 @@ use Illuminate\Support\Facades\Redirect;
 class ProductController extends Controller
 {
     // 商品一覧表示
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with('company')->get();
-        return view('products.index', compact('products'));
+        $query = Product::with('company');
+
+        // 商品名キーワード検索
+        if ($request->filled('keyword')) {
+            $query->where('product_name', 'like', '%' . $request->keyword . '%');
+        }
+
+        // メーカー絞り込み
+        if ($request->filled('company_id')) {
+            $query->where('company_id', $request->company_id);
+        }
+
+        $products = $query->get();
+        $companies = Company::all();
+
+        return view('products.index', compact('products', 'companies'));
     }
 
     // 新規作成フォーム表示
@@ -32,11 +46,19 @@ public function store(Request $request)
         'price' => 'required|integer|min:0',
         'stock' => 'required|integer|min:0',
         'comment' => 'nullable|string',
+        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
     ]);
 
     try {
-        Product::create($request->all());
-        return \Illuminate\Support\Facades\Redirect::route('products.index')->with('success', '商品を登録しました！');
+        $data = $request->all();
+
+        if ($request->hasFile('image')) {
+            $path = $request->file('image')->store('products', 'public');
+            $data['img_path'] = $path;
+        }
+
+        Product::create($data);
+        return Redirect::route('products.index')->with('success', '商品を登録しました！');
     } catch (\Exception $e) {
         return back()->withErrors(['error' => '登録に失敗しました: ' . $e->getMessage()]);
     }
@@ -66,12 +88,20 @@ public function store(Request $request)
             'price' => 'required|integer|min:0',
             'stock' => 'required|integer|min:0',
             'comment' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
     ]);
 
-    $product = \App\Models\Product::findOrFail($id);
-    $product->update($request->all());
+    $product = Product::findOrFail($id);
+    $data = $request->all();
 
-    return Redirect::route('products.index')->with('success', '商品情報を更新しました！');    }
+    if ($request->hasFile('image')) {
+        $path = $request->file('image')->store('products', 'public');
+        $data['img_path'] = $path;
+    }
+
+    $product->update($data);
+    return Redirect::route('products.index')->with('success', '商品情報を更新しました！');
+    }
 
     // 削除処理（未実装）
     public function destroy($id)

@@ -6,3 +6,29 @@
 
 // Bootstrap
 @import 'bootstrap/scss/bootstrap';
+
+/* ====== 商品登録フォーム調整 ====== */
+.form-group.d-flex {
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.form-group.d-flex label {
+    width: 20%;
+    margin-right: 1rem;
+    text-align: right;
+}
+
+.form-group.d-flex input[type="file"],
+.form-group.d-flex textarea,
+.form-group.d-flex input[type="text"],
+.form-group.d-flex input[type="number"],
+.form-group.d-flex select {
+    width: 70%;
+}
+
+/* 余白の改善 */
+.form-group {
+    margin-top: 10px;
+    margin-bottom: 15px;
+}

@@ -2,24 +2,39 @@
 
 @section('content')
 <div class="container">
-    <h1>商品詳細</h1>
+    <h1 class="mb-4">商品詳細</h1>
 
-    <table class="table table-bordered">
-        <p><strong>ID：</strong> {{ $product->id }}</p>
+    <div class="mb-3">
+        <strong class="me-2">ID：</strong> {{ $product->id }}
+    </div>
 
+    <div class="d-flex align-items-center mb-4">
+        <strong class="me-3">商品画像：</strong>
         @if ($product->img_path)
-        <div class="mb-3">
-            <label>商品画像</label><br>
             <img src="{{ asset('storage/' . $product->img_path) }}" alt="商品画像" style="max-width: 300px;">
-        </div>
         @else
-        <p>画像は登録されていません。</p>
+            <span>画像は登録されていません。</span>
         @endif
+    </div>
 
-        <p><strong>商品名：</strong> {{ $product->product_name }}</p>
-        <p><strong>価格：</strong> {{ $product->price }} 円</p>
-        <p><strong>在庫：</strong> {{ $product->stock }}</p>
-        <p><strong>コメント：</strong> {{ $product->comment }}</p>
+    <div class="mb-3">
+        <strong class="me-2">商品名：</strong> {{ $product->product_name }}
+    </div>
+
+    <div class="mb-3">
+        <strong class="me-2">価格：</strong> {{ $product->price }} 円
+    </div>
+
+    <div class="mb-3">
+        <strong class="me-2">在庫：</strong> {{ $product->stock }}
+    </div>
+
+    <div class="d-flex align-items-center mb-4">
+        <strong class="me-3">コメント：</strong>
+        <span>{{ $product->comment ?? 'なし' }}</span>
+    </div>
+
+    <table class="table table-bordered mt-4">
         <tr>
             <th>登録日</th>
             <td>{{ $product->created_at }}</td>
@@ -30,7 +45,9 @@
         </tr>
     </table>
 
-    <a href="{{ route('products.index') }}" class="btn btn-secondary">戻る</a>
-    <a href="{{ route('products.edit', $product->id) }}" class="btn btn-primary">編集</a>
+    <div class="mt-4">
+        <a href="{{ route('products.index') }}" class="btn btn-secondary me-2">戻る</a>
+        <a href="{{ route('products.edit', $product->id) }}" class="btn btn-primary">編集</a>
+    </div>
 </div>
 @endsection
