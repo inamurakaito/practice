@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Company;
 use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\ProductRequest;
 
 class ProductController extends Controller
 {
@@ -38,19 +39,10 @@ class ProductController extends Controller
     }
 
 // 商品登録処理
-public function store(Request $request)
+public function store(ProductRequest $request)
 {
-    $request->validate([
-        'product_name' => 'required|string|max:255',
-        'company_id' => 'required|exists:companies,id',
-        'price' => 'required|integer|min:0',
-        'stock' => 'required|integer|min:0',
-        'comment' => 'nullable|string',
-        'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
-    ]);
-
     try {
-        $data = $request->all();
+        $data = $request->validated();
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('products', 'public');
@@ -80,25 +72,16 @@ public function store(Request $request)
     }
 
     // 更新処理（未実装）
-    public function update(Request $request, $id)
+    public function update(ProductRequest $request, $id)
     {
-        $request->validate([
-            'product_name' => 'required|string|max:255',
-            'company_id' => 'required|exists:companies,id',
-            'price' => 'required|integer|min:0',
-            'stock' => 'required|integer|min:0',
-            'comment' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240',
-    ]);
-
-    $product = Product::findOrFail($id);
-    $data = $request->all();
+    $data = $request->validated();
 
     if ($request->hasFile('image')) {
         $path = $request->file('image')->store('products', 'public');
         $data['img_path'] = $path;
     }
 
+    $product = Product::findOrFail($id);
     $product->update($data);
     return Redirect::route('products.index')->with('success', '商品情報を更新しました！');
     }

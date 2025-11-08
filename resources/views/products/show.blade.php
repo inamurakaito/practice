@@ -34,16 +34,7 @@
         <span>{{ $product->comment ?? 'なし' }}</span>
     </div>
 
-    <table class="table table-bordered mt-4">
-        <tr>
-            <th>登録日</th>
-            <td>{{ $product->created_at }}</td>
-        </tr>
-        <tr>
-            <th>更新日</th>
-            <td>{{ $product->updated_at }}</td>
-        </tr>
-    </table>
+
 
     <div class="mt-4">
         <a href="{{ route('products.index') }}" class="btn btn-secondary me-2">戻る</a>

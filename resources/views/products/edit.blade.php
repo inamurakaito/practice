@@ -4,6 +4,15 @@
 <div class="container">
     <h1 class="mb-4">商品編集フォーム</h1>
 
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
     <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
@@ -17,9 +26,9 @@
             <label for="company_id" class="form-label me-3" style="width: 120px;">メーカー</label>
             <select name="company_id" class="form-control w-50">
                 @foreach($companies as $company)
-                    <option value="{{ $company->id }}" {{ $product->company_id == $company->id ? 'selected' : '' }}>
-                        {{ $company->company_name }}
-                    </option>
+                <option value="{{ $company->id }}" {{ $product->company_id == $company->id ? 'selected' : '' }}>
+                    {{ $company->company_name }}
+                </option>
                 @endforeach
             </select>
         </div>
