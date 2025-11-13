@@ -10,6 +10,11 @@ use App\Http\Requests\ProductRequest;
 
 class ProductController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     // 商品一覧表示
     public function index(Request $request)
     {
@@ -89,9 +94,12 @@ public function store(ProductRequest $request)
     // 削除処理（未実装）
     public function destroy($id)
     {
+        try {
             $product = Product::findOrFail($id);
             $product->delete();
-
             return Redirect::route('products.index')->with('success', '商品を削除しました！');
+        } catch (\Exception $e) {
+            return back()->withErrors(['error' => '削除に失敗しました: ' . $e->getMessage()]);
+        }
     }
 }
