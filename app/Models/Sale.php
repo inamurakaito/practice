@@ -11,6 +11,7 @@ class Sale extends Model
 
     protected $fillable = [
         'product_id',
+        'price', //購入時の価格を保存するために必要
     ];
 
     // 🔗 リレーション（1販売は1つの商品に属する）

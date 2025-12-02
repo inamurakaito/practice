@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('sales', function (Blueprint $table) {
             $table->id(); // 主キー
             $table->unsignedBigInteger('product_id'); // 外部キー
+            $table->integer('price'); // 購入時の価格（必須）
             $table->timestamps(); // created_at, updated_at
 
             // 外部キー制約
