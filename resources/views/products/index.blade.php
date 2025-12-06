@@ -70,28 +70,28 @@
         <thead>
             <tr>
                 <th>
-                    <a href="{{ route('products.index', ['sort' => 'id', 'order' => request('order') === 'asc' ? 'desc' : 'asc']) }}">
+                    <a class="sort-link" href="{{ route('products.index', array_merge(request()->query(), ['sort' => 'id', 'order' => request('order') === 'asc' ? 'desc' : 'asc'])) }}">
                         ID
                     </a>
                 </th>
                 <th>画像</th>
                 <th>
-                    <a href="{{ route('products.index', ['sort' => 'product_name', 'order' => request('order') === 'asc' ? 'desc' : 'asc']) }}">
+                    <a class="sort-link" href="{{ route('products.index', array_merge(request()->query(), ['sort' => 'product_name', 'order' => request('order') === 'asc' ? 'desc' : 'asc'])) }}">
                         商品名
                     </a>
                 </th>
                 <th>
-                    <a href="{{ route('products.index', ['sort' => 'price', 'order' => request('order') === 'asc' ? 'desc' : 'asc']) }}">
+                    <a class="sort-link" href="{{ route('products.index', array_merge(request()->query(), ['sort' => 'price', 'order' => request('order') === 'asc' ? 'desc' : 'asc'])) }}">
                         価格
                     </a>
                 </th>
                 <th>
-                    <a href="{{ route('products.index', ['sort' => 'stock', 'order' => request('order') === 'asc' ? 'desc' : 'asc']) }}">
+                    <a class="sort-link" href="{{ route('products.index', array_merge(request()->query(), ['sort' => 'stock', 'order' => request('order') === 'asc' ? 'desc' : 'asc'])) }}">
                         在庫数
                     </a>
                 </th>
                 <th>
-                    <a href="{{ route('products.index', ['sort' => 'company_id', 'order' => request('order') === 'asc' ? 'desc' : 'asc']) }}">
+                    <a class="sort-link" href="{{ route('products.index', array_merge(request()->query(), ['sort' => 'company_id', 'order' => request('order') === 'asc' ? 'desc' : 'asc'])) }}">
                         メーカー
                     </a>
                 </th>
@@ -154,6 +154,24 @@
             },
             error: function() {
                 alert('通信エラーが発生しました');
+            }
+        });
+    });
+
+    // ▼ Ajaxソート処理
+    $(document).on('click', '.sort-link', function(e) {
+        e.preventDefault();
+
+        let url = $(this).attr('href');
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            success: function(response) {
+                $('#product-table-body').html(response.html);
+            },
+            error: function() {
+                alert('ソートに失敗しました');
             }
         });
     });
