@@ -93,6 +93,49 @@ class ProductController extends Controller
         ]);
     }
 
+    /** Ajax版ソート（検索条件を維持してソート） */
+    public function ajaxSort(Request $request)
+    {
+        $query = Product::with('company');
+
+        // ▼ 検索条件（index と同じ）
+        if ($request->filled('keyword')) {
+            $query->where('product_name', 'like', '%' . $request->keyword . '%');
+        }
+
+        if ($request->filled('company_id')) {
+            $query->where('company_id', $request->company_id);
+        }
+
+        if ($request->filled('price_min')) {
+            $query->where('price', '>=', $request->price_min);
+        }
+
+        if ($request->filled('price_max')) {
+            $query->where('price', '<=', $request->price_max);
+        }
+
+        if ($request->filled('stock_min')) {
+            $query->where('stock', '>=', $request->stock_min);
+        }
+
+        if ($request->filled('stock_max')) {
+            $query->where('stock', '<=', $request->stock_max);
+        }
+
+        // ▼ ソート処理
+        $sort = $request->get('sort', 'id');
+        $order = $request->get('order', 'desc');
+        $query->orderBy($sort, $order);
+
+        // ▼ 部分HTML返却
+        $products = $query->get();
+
+        return response()->json([
+            'html' => view('products.partials.list', compact('products'))->render()
+        ]);
+    }
+
     /** 新規登録フォーム */
     public function create()
     {

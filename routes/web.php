@@ -13,6 +13,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 // Ajax検索用
 Route::get('/ajax/search', [ProductController::class, 'ajaxSearch'])->name('ajax.search');
 
+Route::get('/ajax/sort', [ProductController::class, 'ajaxSort'])->name('ajax.sort');
+
 /* ログイン必須エリア */
 Route::middleware('auth')->group(function () {
 
