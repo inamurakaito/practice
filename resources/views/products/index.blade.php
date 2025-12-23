@@ -70,28 +70,28 @@
         <thead>
             <tr>
                 <th>
-                    <a class="sort-link" href="{{ route('products.index', array_merge(request()->query(), ['sort' => 'id', 'order' => request('order') === 'asc' ? 'desc' : 'asc'])) }}">
+                    <a class="sort-link" href="{{ route('ajax.sort', array_merge(request()->query(), ['sort' => 'id', 'order' => request('order') === 'asc' ? 'desc' : 'asc'])) }}">
                         ID
                     </a>
                 </th>
                 <th>画像</th>
                 <th>
-                    <a class="sort-link" href="{{ route('products.index', array_merge(request()->query(), ['sort' => 'product_name', 'order' => request('order') === 'asc' ? 'desc' : 'asc'])) }}">
+                    <a class="sort-link" href="{{ route('ajax.sort', array_merge(request()->query(), ['sort' => 'product_name', 'order' => request('order') === 'asc' ? 'desc' : 'asc'])) }}">
                         商品名
                     </a>
                 </th>
                 <th>
-                    <a class="sort-link" href="{{ route('products.index', array_merge(request()->query(), ['sort' => 'price', 'order' => request('order') === 'asc' ? 'desc' : 'asc'])) }}">
+                    <a class="sort-link" href="{{ route('ajax.sort', array_merge(request()->query(), ['sort' => 'price', 'order' => request('order') === 'asc' ? 'desc' : 'asc'])) }}">
                         価格
                     </a>
                 </th>
                 <th>
-                    <a class="sort-link" href="{{ route('products.index', array_merge(request()->query(), ['sort' => 'stock', 'order' => request('order') === 'asc' ? 'desc' : 'asc'])) }}">
+                    <a class="sort-link" href="{{ route('ajax.sort', array_merge(request()->query(), ['sort' => 'stock', 'order' => request('order') === 'asc' ? 'desc' : 'asc'])) }}">
                         在庫数
                     </a>
                 </th>
                 <th>
-                    <a class="sort-link" href="{{ route('products.index', array_merge(request()->query(), ['sort' => 'company_id', 'order' => request('order') === 'asc' ? 'desc' : 'asc'])) }}">
+                    <a class="sort-link" href="{{ route('ajax.sort', array_merge(request()->query(), ['sort' => 'company_id', 'order' => request('order') === 'asc' ? 'desc' : 'asc'])) }}">
                         メーカー
                     </a>
                 </th>
@@ -158,23 +158,26 @@
         });
     });
 
-    // ▼ Ajaxソート処理
-    $(document).on('click', '.sort-link', function(e) {
-        e.preventDefault();
+// ▼ Ajaxソート処理（検索条件を保持）
+$(document).on('click', '.sort-link', function(e) {
+    e.preventDefault();
 
-        let url = $(this).attr('href');
+    let url = $(this).attr('href');
 
-        $.ajax({
-            url: url,
-            type: 'GET',
-            success: function(response) {
-                $('#product-table-body').html(response.html);
-            },
-            error: function() {
-                alert('ソートに失敗しました');
-            }
-        });
+    // 🔽 検索フォームの内容を取得
+    let formData = $('#search-form').serialize();
+
+    $.ajax({
+        url: url + '&' + formData, // ← ここが重要
+        type: 'GET',
+        success: function(response) {
+            $('#product-table-body').html(response.html);
+        },
+        error: function() {
+            alert('ソートに失敗しました');
+        }
     });
+});
 
     // ▼ Ajax購入処理
     $(document).on('click', '.purchase-btn', function(e) {
